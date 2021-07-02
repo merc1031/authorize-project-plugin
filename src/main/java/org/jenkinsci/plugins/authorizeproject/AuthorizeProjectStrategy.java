@@ -163,6 +163,7 @@ public abstract class AuthorizeProjectStrategy extends AbstractDescribableImpl<A
         return true;
     }
 
+    static Boolean starting = true;
     /**
      * If we are being deserialized outside of loading the initial jobs (or reloading) then we need to cross check
      * the strategy permissions to defend against somebody trying to push a configuration relating to a user other
@@ -173,7 +174,11 @@ public abstract class AuthorizeProjectStrategy extends AbstractDescribableImpl<A
      * @see AuthorizeProjectProperty#setStrategyCritical()
      */
     protected Object readResolve() throws ObjectStreamException {
-        checkUnsecuredConfiguration();
+        if (starting) {
+          starting = false;
+        } else {
+          checkUnsecuredConfiguration();
+        }
         return this;
     }
 
